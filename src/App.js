@@ -1,23 +1,31 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import Details from './Components/Details';
+import List from './Components/List';
 
 function App() {
+  const [users, setUsers] = useState([]);
+  const [user, setUser] = useState();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch('https://raw.githubusercontent.com/netology-code/ra16-homeworks/master/hooks-context/use-effect/data/users.json')
+      .then((response) => response.json())
+      .then((data) => setUsers(data));
+      setLoading(false);
+  }, []);
+
+  const handleClick = (id) => {
+    const selectedUser = users.find(user => user.id === id);
+    
+    setUser(selectedUser);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <List users={users} handleClick={handleClick} />
+      {user ? <Details info={user} /> : null}
     </div>
   );
 }
